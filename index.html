@@ -49,7 +49,7 @@
 
       p {
         font-size: 1.2rem;
-        margin: 0.5rem 0;
+        margin: 0.5rem 1rem;
         text-align: center;
         opacity: 0.9;
         max-width: 600px;
@@ -125,7 +125,7 @@
         width: 10px;
         height: 10px;
         background-color: #ff6b6b;
-        opacity: 0.7;
+        opacity: 0.9;
         animation: fall 3s linear infinite;
       }
 
@@ -147,17 +147,17 @@
     <main>
       <p>Welcome to our GitHub Pages profile!</p>
       <p>
-        Here, you'll find information about our work, projects, and other
-        updates.
-      </p>
-      <p>
         Our love story is a beautiful journey, and now we're taking the next
         step by buying a house together. Thank you for being a part of our
         adventure!
       </p>
+      <p></p>
+        If you would like to support us, please click the button below to view
+        our Revolut QR code.
+      </p>
 
       <button id="confetti-btn">Celebrate!</button>
-      <button id="qr-btn">Click here</button>
+      <button id="qr-btn">View Revolut QR Code</button>
     </main>
 
     <div id="qr-modal" class="modal">
@@ -213,6 +213,11 @@
           "#1e90ff",
           "#3742fa",
           "#a55eea",
+          "#ff9ff3",
+          "#feca57",
+          "#48dbfb",
+          "#1dd1a1",
+          "#5f27cd",
         ];
         const color = colors[Math.floor(Math.random() * colors.length)];
 
