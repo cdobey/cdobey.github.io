@@ -159,9 +159,16 @@
         margin-left: 10px;
         cursor: pointer;
         font-size: 1rem;
-        background: none;
+        background: rgba(30, 144, 255, 0.1);
         border: none;
+        border-radius: 5px;
         color: #1e90ff;
+        padding: 5px 10px;
+        transition: background 0.3s;
+      }
+
+      .copy-btn:hover {
+        background: rgba(30, 144, 255, 0.2);
       }
 
       .confetti {
@@ -180,6 +187,27 @@
         100% {
           transform: translateY(100vh);
         }
+      }
+
+      .payment-switch {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .payment-switch button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        background-color: #ddd;
+        transition: background-color 0.3s;
+      }
+
+      .payment-switch button.active {
+        background-color: #1e90ff;
+        color: #fff;
       }
     </style>
   </head>
@@ -219,10 +247,22 @@
     <div id="qr-modal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <img src="images/revolut.jpeg" alt="Revolut QR Code" />
+        <div class="payment-switch">
+          <button
+            id="revolut-btn"
+            class="active"
+            onclick="switchPayment('revolut')"
+          >
+            Revolut
+          </button>
+          <button id="pix-btn" onclick="switchPayment('pix')">Pix</button>
+        </div>
+        <img id="qr-image" src="images/revolut.jpeg" alt="Revolut QR Code" />
         <div class="revolut-section">
           <p id="send-us">Send us via Revolut:</p>
-          <a href="https://revolut.com/" target="_blank">@chrisdobey</a>
+          <a id="payment-link" href="https://revolut.me/nvlg12" target="_blank"
+            >@nvlg12</a
+          >
           <button
             class="copy-btn"
             onclick="copyUsername()"
@@ -255,16 +295,17 @@
           title: "Christopher Dobey e Nastassja Losada",
           welcome: "Bem-vindo à nossa história de amor!",
           description:
-            "Estamos dando o próximo passo em nossa bela jornada. Se você nos ama ou gostaria de fazer parte desta aventura, em vez de nos dar presentes, clique nos botões abaixo para celebrar e participar!",
-          celebrate: "Comemorar!",
+            "Estamos dando o próximo passo em nossa linda jornada. Se você nos ama e/ou gostaria de fazer parte desta aventura, em vez de nos dar presentes, clique nos botões abaixo para celebrar e participar!",
+          celebrate: "Celebrar!",
           participate: "Participar!",
-          sendUs: "Envie-nos via Revolut:",
+          sendUs: "Envie-nos pelo Revolut:",
           footer: "© 2024 Chris & Nas",
           copySuccess: "Nome de usuário copiado para a área de transferência!",
         },
       };
 
       let currentLanguage = "en";
+      let currentPayment = "revolut";
 
       function switchLanguage(lang) {
         currentLanguage = lang;
@@ -291,17 +332,61 @@
           .classList.toggle("active", lang === "pt");
       }
 
+      function switchPayment(payment) {
+        currentPayment = payment;
+        const qrImage = document.getElementById("qr-image");
+        const sendUs = document.getElementById("send-us");
+        const paymentLink = document.getElementById("payment-link");
+
+        if (payment === "revolut") {
+          qrImage.src = "images/revolut.jpeg";
+          sendUs.textContent = translations[currentLanguage].sendUs;
+          paymentLink.href = "https://revolut.me/nvlg12";
+          paymentLink.textContent = "@nvlg12";
+        } else if (payment === "pix") {
+          qrImage.src = "images/pix.jpeg";
+          sendUs.textContent = "Send us via Pix:";
+          paymentLink.href = "#";
+          paymentLink.textContent = "Pix Key: 123456789";
+        }
+
+        document
+          .getElementById("revolut-btn")
+          .classList.toggle("active", payment === "revolut");
+        document
+          .getElementById("pix-btn")
+          .classList.toggle("active", payment === "pix");
+      }
+
       function copyUsername() {
-        const username = "@chrisdobey";
+        const username = currentPayment === "revolut" ? "@nvlg12" : "123456789";
         navigator.clipboard.writeText(username).then(
           () => {
-            alert(translations[currentLanguage].copySuccess);
+            showToast(translations[currentLanguage].copySuccess);
           },
           (err) => {
-            alert("Failed to copy!");
+            showToast("Failed to copy!");
             console.error("Could not copy text: ", err);
           }
         );
+      }
+
+      function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add("show");
+        }, 100);
+
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        }, 3000);
       }
 
       const modal = document.getElementById("qr-modal");
