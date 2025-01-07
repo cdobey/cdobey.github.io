@@ -80,12 +80,12 @@
       .translation-bubble::after {
         content: "";
         position: absolute;
-        bottom: -10px; /* Tail points upwards */
+        top: -10px; /* Tail points downwards */
         left: 50%;
         transform: translateX(-50%);
-        border-width: 10px 10px 0 10px;
+        border-width: 0 10px 10px 10px;
         border-style: solid;
-        border-color: #ffeb3b transparent transparent transparent;
+        border-color: transparent transparent #ffeb3b transparent;
       }
 
       .translation-bubble.show {
