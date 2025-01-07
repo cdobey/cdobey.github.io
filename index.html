@@ -46,6 +46,7 @@
         height: 24px; /* Adjust height as needed */
         background-color: #fff; /* Adjust color as needed */
         margin: 0 10px 0 5px; /* Adjust spacing to move it slightly to the left */
+        z-index: 1; /* Ensure line is behind flags */
       }
 
       .language-switch img {
@@ -55,6 +56,7 @@
         border: 2px solid transparent;
         border-radius: 4px;
         transition: border 0.3s;
+        z-index: 2; /* Ensure flags are on top */
       }
 
       .language-switch img.active {
