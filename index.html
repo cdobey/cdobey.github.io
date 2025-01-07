@@ -39,9 +39,18 @@
         gap: 10px;
       }
 
+      .translation-container::before {
+        content: "";
+        display: block;
+        width: 1px;
+        height: 24px; /* Adjust height as needed */
+        background-color: #fff; /* Adjust color as needed */
+        margin: 0 10px 0 5px; /* Adjust spacing to move it slightly to the left */
+      }
+
       .language-switch img {
-        width: 32px; /* Increase width */
-        height: 24px; /* Increase height */
+        width: 40px; /* Increase width */
+        height: 30px; /* Increase height */
         cursor: pointer;
         border: 2px solid transparent;
         border-radius: 4px;
