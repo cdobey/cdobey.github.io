@@ -119,6 +119,7 @@
         font-weight: bold;
         cursor: pointer;
       }
+
       .confetti {
         position: absolute;
         width: 10px;
@@ -149,6 +150,11 @@
         Here, you'll find information about our work, projects, and other
         updates.
       </p>
+      <p>
+        Our love story is a beautiful journey, and now we're taking the next
+        step by buying a house together. Thank you for being a part of our
+        adventure!
+      </p>
 
       <button id="confetti-btn">Celebrate!</button>
       <button id="qr-btn">Click here</button>
@@ -157,7 +163,6 @@
     <div id="qr-modal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <p style="color: #ff69b4">Scan the QR code to help fund our house!</p>
         <img src="images/revolut.jpeg" alt="Revolut QR Code" />
       </div>
     </div>
@@ -200,9 +205,20 @@
         const x = Math.random() * window.innerWidth;
         const y = Math.random() * window.innerHeight;
         const delay = Math.random() * 0.5;
+        const colors = [
+          "#ff6b6b",
+          "#ff4757",
+          "#ffa502",
+          "#2ed573",
+          "#1e90ff",
+          "#3742fa",
+          "#a55eea",
+        ];
+        const color = colors[Math.floor(Math.random() * colors.length)];
 
         confetti.style.left = `${x}px`;
         confetti.style.top = `${y}px`;
+        confetti.style.backgroundColor = color;
         confetti.style.animationDelay = `${delay}s`;
 
         setTimeout(() => {
