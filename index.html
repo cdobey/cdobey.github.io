@@ -35,6 +35,7 @@
         top: 20px;
         right: 20px;
         display: flex;
+        align-items: center;
         gap: 10px;
       }
 
@@ -49,6 +50,32 @@
 
       .language-switch img.active {
         border: 2px solid #fff;
+      }
+
+      .language-switch .language-bubble {
+        position: relative;
+      }
+
+      .language-switch .language-bubble::after {
+        content: "Não entendeu? Clique aqui!";
+        position: absolute;
+        top: -5px;
+        right: 30px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s, transform 0.3s;
+        pointer-events: none;
+      }
+
+      .language-switch .language-bubble:hover::after {
+        opacity: 1;
+        transform: translateY(0);
       }
 
       h1 {
@@ -77,7 +104,15 @@
         max-width: 600px;
       }
 
-      button {
+      .button-group {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .button-group button {
+        flex: 1;
         padding: 1rem 2rem;
         font-size: 1.2rem;
         font-weight: 500;
@@ -85,24 +120,17 @@
         background-color: #ff6b6b;
         border: none;
         border-radius: 50px;
-        margin-top: 2rem;
         cursor: pointer;
         transition: all 0.3s ease-in-out;
       }
 
-      button:hover {
+      .button-group button:hover {
         background-color: #ff4757;
         box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
       }
 
-      button:focus {
+      .button-group button:focus {
         outline: none;
-      }
-
-      .button-group {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
       }
 
       footer {
@@ -204,6 +232,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
       }
 
       .copy-btn:hover {
@@ -297,6 +326,30 @@
         opacity: 1;
         transform: translateX(-50%) translateY(-10px);
       }
+
+      /* Enhanced Revolut and Pix Sections */
+      .payment-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .payment-link {
+        margin-top: 10px;
+        text-decoration: none;
+        color: #1e90ff;
+        font-weight: 500;
+      }
+
+      @media (max-width: 500px) {
+        .button-group {
+          flex-direction: column;
+        }
+
+        .payment-switch {
+          flex-direction: column;
+        }
+      }
     </style>
   </head>
   <body>
@@ -308,12 +361,14 @@
         class="active"
         onclick="switchLanguage('en')"
       />
-      <img
-        src="https://flagcdn.com/24x18/br.png"
-        alt="Português"
-        id="pt-btn"
-        onclick="switchLanguage('pt')"
-      />
+      <div class="language-bubble">
+        <img
+          src="https://flagcdn.com/24x18/br.png"
+          alt="Português"
+          id="pt-btn"
+          onclick="switchLanguage('pt')"
+        />
+      </div>
     </div>
 
     <header>
@@ -361,6 +416,16 @@
             📋
           </button>
         </div>
+        <div class="payment-section">
+          <a
+            id="payment-link-section"
+            href="https://revolut.me/nvlg12"
+            target="_blank"
+            class="payment-link"
+          >
+            Visit Payment Link
+          </a>
+        </div>
       </div>
     </div>
 
@@ -378,11 +443,12 @@
           celebrate: "Celebrate!",
           participate: "Participate!",
           sendUs: "Send us via Revolut:",
-          footer: "© 2024 Chris & Nas",
-          copySuccess: "Username copied to clipboard!",
           sendUsPix: "Send us via Pix:",
-          pixKey: "Click here to copy Pix key",
+          footer: "© 2024 Chris & Nas",
+          copySuccessRevolut: "Revolut username copied to clipboard!",
+          copySuccessPix: "Pix key copied to clipboard!",
           copyFail: "Failed to copy!",
+          paymentLink: "Visit Payment Link",
         },
         pt: {
           title: "Christopher Dobey e Nastassja Losada",
@@ -392,11 +458,13 @@
           celebrate: "Celebrar!",
           participate: "Participar!",
           sendUs: "Envie-nos pelo Revolut:",
-          footer: "© 2024 Chris & Nas",
-          copySuccess: "Nome de usuário copiado para a área de transferência!",
           sendUsPix: "Envie-nos pelo Pix:",
-          pixKey: "Clique aqui para copiar a chave Pix",
+          footer: "© 2024 Chris & Nas",
+          copySuccessRevolut:
+            "Nome de usuário do Revolut copiado para a área de transferência!",
+          copySuccessPix: "Chave Pix copiada para a área de transferência!",
           copyFail: "Falha ao copiar!",
+          paymentLink: "Visitar Link de Pagamento",
         },
       };
 
@@ -414,10 +482,14 @@
           translations[lang].celebrate;
         document.getElementById("qr-btn").textContent =
           translations[lang].participate;
-        document.getElementById("send-us").textContent =
-          translations[lang].sendUs;
         document.getElementById("footer-text").textContent =
           translations[lang].footer;
+
+        if (lang === "pt") {
+          switchPayment("pix");
+        } else {
+          switchPayment("revolut");
+        }
 
         // Update active flag
         document
@@ -433,17 +505,26 @@
         const qrImage = document.getElementById("qr-image");
         const sendUs = document.getElementById("send-us");
         const paymentLink = document.getElementById("payment-link");
+        const paymentLinkSection = document.getElementById(
+          "payment-link-section"
+        );
 
         if (payment === "revolut") {
           qrImage.src = "images/revolut.jpeg";
           sendUs.textContent = translations[currentLanguage].sendUs;
           paymentLink.href = "https://revolut.me/nvlg12";
           paymentLink.textContent = "@nvlg12";
+          paymentLinkSection.href = "https://revolut.me/nvlg12";
+          paymentLinkSection.textContent =
+            translations[currentLanguage].paymentLink;
         } else if (payment === "pix") {
           qrImage.src = "images/pix.jpeg";
           sendUs.textContent = translations[currentLanguage].sendUsPix;
           paymentLink.href = "#";
-          paymentLink.textContent = translations[currentLanguage].pixKey;
+          paymentLink.textContent = "79349510-513b-4a82-9e5b-b09d33543792";
+          paymentLinkSection.href = "#";
+          paymentLinkSection.textContent =
+            translations[currentLanguage].paymentLink;
         }
 
         document
@@ -455,13 +536,19 @@
       }
 
       function copyUsername() {
-        const username =
-          currentPayment === "revolut"
-            ? "@nvlg12"
-            : "79349510-513b-4a82-9e5b-b09d33543792";
+        let username;
+        let successMessage;
+        if (currentPayment === "revolut") {
+          username = "@nvlg12";
+          successMessage = translations[currentLanguage].copySuccessRevolut;
+        } else {
+          username = "79349510-513b-4a82-9e5b-b09d33543792";
+          successMessage = translations[currentLanguage].copySuccessPix;
+        }
+
         navigator.clipboard.writeText(username).then(
           () => {
-            showToast(translations[currentLanguage].copySuccess);
+            showToast(successMessage);
           },
           (err) => {
             showToast(translations[currentLanguage].copyFail);
@@ -471,6 +558,11 @@
       }
 
       function showToast(message) {
+        const existingToast = document.querySelector(".toast");
+        if (existingToast) {
+          existingToast.remove();
+        }
+
         const toast = document.createElement("div");
         toast.className = "toast";
         toast.textContent = message;
