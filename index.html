@@ -290,6 +290,9 @@
           sendUs: "Send us via Revolut:",
           footer: "© 2024 Chris & Nas",
           copySuccess: "Username copied to clipboard!",
+          sendUsPix: "Send us via Pix:",
+          pixKey: "Pix Key: 79349510-513b-4a82-9e5b-b09d33543792",
+          copyFail: "Failed to copy!",
         },
         pt: {
           title: "Christopher Dobey e Nastassja Losada",
@@ -301,6 +304,9 @@
           sendUs: "Envie-nos pelo Revolut:",
           footer: "© 2024 Chris & Nas",
           copySuccess: "Nome de usuário copiado para a área de transferência!",
+          sendUsPix: "Envie-nos pelo Pix:",
+          pixKey: "Chave Pix: 79349510-513b-4a82-9e5b-b09d33543792",
+          copyFail: "Falha ao copiar!",
         },
       };
 
@@ -345,9 +351,9 @@
           paymentLink.textContent = "@nvlg12";
         } else if (payment === "pix") {
           qrImage.src = "images/pix.jpeg";
-          sendUs.textContent = "Send us via Pix:";
+          sendUs.textContent = translations[currentLanguage].sendUsPix;
           paymentLink.href = "#";
-          paymentLink.textContent = "Pix Key: 123456789";
+          paymentLink.textContent = translations[currentLanguage].pixKey;
         }
 
         document
@@ -365,7 +371,7 @@
             showToast(translations[currentLanguage].copySuccess);
           },
           (err) => {
-            showToast("Failed to copy!");
+            showToast(translations[currentLanguage].copyFail);
             console.error("Could not copy text: ", err);
           }
         );
