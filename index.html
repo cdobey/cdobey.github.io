@@ -52,30 +52,68 @@
         border: 2px solid #fff;
       }
 
-      .language-switch .language-bubble {
+      /* Translation Bubble */
+      .translation-container {
         position: relative;
+        display: flex;
+        align-items: center;
       }
 
-      .language-switch .language-bubble::after {
-        content: "Não entendeu? Clique aqui!";
+      .translation-bubble {
         position: absolute;
-        top: -5px;
-        right: 30px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 10px;
+        top: 30px; /* Positioned below the flag */
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ffeb3b;
+        color: #333;
+        padding: 10px 15px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         font-size: 0.75rem;
-        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        animation: bounceIn 0.6s ease-out, fadeOut 3s 2.5s forwards;
         opacity: 0;
-        transform: translateY(-10px);
-        transition: opacity 0.3s, transform 0.3s;
-        pointer-events: none;
+        z-index: 1;
       }
 
-      .language-switch .language-bubble:hover::after {
+      .translation-bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -10px; /* Tail points upwards */
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 10px 10px 0 10px;
+        border-style: solid;
+        border-color: #ffeb3b transparent transparent transparent;
+      }
+
+      .translation-bubble.show {
         opacity: 1;
-        transform: translateY(0);
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: translateX(-50%) scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: translateX(-50%) scale(1.05);
+          opacity: 1;
+        }
+        70% {
+          transform: translateX(-50%) scale(0.9);
+        }
+        100% {
+          transform: translateX(-50%) scale(1);
+        }
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-20px);
+        }
       }
 
       h1 {
@@ -341,7 +379,8 @@
         font-weight: 500;
       }
 
-      @media (max-width: 500px) {
+      /* Remove media queries to keep buttons side by side */
+      /* @media (max-width: 500px) {
         .button-group {
           flex-direction: column;
         }
@@ -349,7 +388,7 @@
         .payment-switch {
           flex-direction: column;
         }
-      }
+      } */
     </style>
   </head>
   <body>
@@ -361,13 +400,16 @@
         class="active"
         onclick="switchLanguage('en')"
       />
-      <div class="language-bubble">
+      <div class="translation-container">
         <img
           src="https://flagcdn.com/24x18/br.png"
           alt="Português"
           id="pt-btn"
           onclick="switchLanguage('pt')"
         />
+        <div class="translation-bubble" id="translation-bubble">
+          Não entendeu? Clique aqui!
+        </div>
       </div>
     </div>
 
@@ -520,9 +562,11 @@
         } else if (payment === "pix") {
           qrImage.src = "images/pix.jpeg";
           sendUs.textContent = translations[currentLanguage].sendUsPix;
-          paymentLink.href = "#";
+          paymentLink.href =
+            "https://nubank.com.br/cobrar/clo2/677d9980-63dd-456f-b6b2-4bebd2c5ce67";
           paymentLink.textContent = "79349510-513b-4a82-9e5b-b09d33543792";
-          paymentLinkSection.href = "#";
+          paymentLinkSection.href =
+            "https://nubank.com.br/cobrar/clo2/677d9980-63dd-456f-b6b2-4bebd2c5ce67";
           paymentLinkSection.textContent =
             translations[currentLanguage].paymentLink;
         }
@@ -584,6 +628,7 @@
       const btn = document.getElementById("qr-btn");
       const span = document.getElementsByClassName("close")[0];
       const confettiBtn = document.getElementById("confetti-btn");
+      const languageBubble = document.getElementById("translation-bubble");
 
       btn.onclick = function () {
         modal.style.display = "flex";
@@ -644,6 +689,14 @@
 
       // Initialize with default language
       switchLanguage(currentLanguage);
+
+      // Show the translation bubble on page load
+      window.addEventListener("load", () => {
+        languageBubble.classList.add("show");
+        setTimeout(() => {
+          languageBubble.classList.remove("show");
+        }, 3000); // Bubble disappears after 3 seconds
+      });
     </script>
   </body>
 </html>
