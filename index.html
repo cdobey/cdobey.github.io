@@ -27,6 +27,28 @@
         background: linear-gradient(135deg, #f06, #aaf);
         color: #fff;
         text-align: center;
+        position: relative;
+      }
+
+      .language-switch {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .language-switch img {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        transition: border 0.3s;
+      }
+
+      .language-switch img.active {
+        border: 2px solid #fff;
       }
 
       h1 {
@@ -103,6 +125,8 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         text-align: center;
         width: 300px;
+        position: relative;
+        color: #000;
       }
 
       .modal-content img {
@@ -118,6 +142,26 @@
         font-size: 30px;
         font-weight: bold;
         cursor: pointer;
+        color: #333;
+      }
+
+      .revolut-section {
+        margin-top: 20px;
+      }
+
+      .revolut-section a {
+        color: #1e90ff;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .copy-btn {
+        margin-left: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+        background: none;
+        border: none;
+        color: #1e90ff;
       }
 
       .confetti {
@@ -140,16 +184,32 @@
     </style>
   </head>
   <body>
+    <div class="language-switch">
+      <img
+        src="https://flagcdn.com/24x18/gb.png"
+        alt="English"
+        id="en-btn"
+        class="active"
+        onclick="switchLanguage('en')"
+      />
+      <img
+        src="https://flagcdn.com/24x18/br.png"
+        alt="Português"
+        id="pt-btn"
+        onclick="switchLanguage('pt')"
+      />
+    </div>
+
     <header>
-      <h1>Christopher Dobey and Nastassja Losada</h1>
+      <h1 id="title">Christopher Dobey and Nastassja Losada</h1>
     </header>
 
     <main>
-      <p>Welcome to our love story!</p>
-      <p>
-        We are taking the next step on our beautiful journey. If you love us or
-        would like to be a part of this adventure, instead of giving us any
-        gifts, click on the buttons below to celebrate and participate!
+      <p id="welcome">Welcome to our love story!</p>
+      <p id="description">
+        We are taking the next step on our beautiful journey. If you love us
+        and/or would like to be a part of this adventure, instead of giving us
+        any gifts, click on the buttons below to celebrate and participate!
       </p>
 
       <button id="confetti-btn">Celebrate!</button>
@@ -160,14 +220,90 @@
       <div class="modal-content">
         <span class="close">&times;</span>
         <img src="images/revolut.jpeg" alt="Revolut QR Code" />
+        <div class="revolut-section">
+          <p id="send-us">Send us via Revolut:</p>
+          <a href="https://revolut.com/" target="_blank">@chrisdobey</a>
+          <button
+            class="copy-btn"
+            onclick="copyUsername()"
+            title="Copy Username"
+          >
+            📋
+          </button>
+        </div>
       </div>
     </div>
 
     <footer>
-      <p>&copy; 2024 Chris & Nas</p>
+      <p id="footer-text">&copy; 2024 Chris & Nas</p>
     </footer>
 
     <script>
+      const translations = {
+        en: {
+          title: "Christopher Dobey and Nastassja Losada",
+          welcome: "Welcome to our love story!",
+          description:
+            "We are taking the next step on our beautiful journey. If you love us or would like to be a part of this adventure, instead of giving us any gifts, click on the buttons below to celebrate and participate!",
+          celebrate: "Celebrate!",
+          participate: "Participate!",
+          sendUs: "Send us via Revolut:",
+          footer: "© 2024 Chris & Nas",
+          copySuccess: "Username copied to clipboard!",
+        },
+        pt: {
+          title: "Christopher Dobey e Nastassja Losada",
+          welcome: "Bem-vindo à nossa história de amor!",
+          description:
+            "Estamos dando o próximo passo em nossa bela jornada. Se você nos ama ou gostaria de fazer parte desta aventura, em vez de nos dar presentes, clique nos botões abaixo para celebrar e participar!",
+          celebrate: "Comemorar!",
+          participate: "Participar!",
+          sendUs: "Envie-nos via Revolut:",
+          footer: "© 2024 Chris & Nas",
+          copySuccess: "Nome de usuário copiado para a área de transferência!",
+        },
+      };
+
+      let currentLanguage = "en";
+
+      function switchLanguage(lang) {
+        currentLanguage = lang;
+        document.getElementById("title").textContent = translations[lang].title;
+        document.getElementById("welcome").textContent =
+          translations[lang].welcome;
+        document.getElementById("description").textContent =
+          translations[lang].description;
+        document.getElementById("confetti-btn").textContent =
+          translations[lang].celebrate;
+        document.getElementById("qr-btn").textContent =
+          translations[lang].participate;
+        document.getElementById("send-us").textContent =
+          translations[lang].sendUs;
+        document.getElementById("footer-text").textContent =
+          translations[lang].footer;
+
+        // Update active flag
+        document
+          .getElementById("en-btn")
+          .classList.toggle("active", lang === "en");
+        document
+          .getElementById("pt-btn")
+          .classList.toggle("active", lang === "pt");
+      }
+
+      function copyUsername() {
+        const username = "@chrisdobey";
+        navigator.clipboard.writeText(username).then(
+          () => {
+            alert(translations[currentLanguage].copySuccess);
+          },
+          (err) => {
+            alert("Failed to copy!");
+            console.error("Could not copy text: ", err);
+          }
+        );
+      }
+
       const modal = document.getElementById("qr-modal");
       const btn = document.getElementById("qr-btn");
       const span = document.getElementsByClassName("close")[0];
@@ -226,6 +362,9 @@
           confetti.remove();
         }, 3000);
       }
+
+      // Initialize with default language
+      switchLanguage(currentLanguage);
     </script>
   </body>
 </html>
